@@ -1,3 +1,4 @@
+import { CloudCreateModal } from "@/components/CloudCreateModal";
 import CloudManagementTable from "@/components/CloudManagementTable";
 
 export default function Home() {
@@ -6,6 +7,7 @@ export default function Home() {
             <div className="container mx-auto py-8 px-4">
                 <CloudManagementTable />
             </div>
+            <CloudCreateModal />
         </div>
     );
 }
