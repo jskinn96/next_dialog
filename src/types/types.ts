@@ -1,4 +1,5 @@
-const AWSRegionList = [
+// regionList
+export const AWSRegionList = [
     'global',
     'ap-northeast-1',
     'ap-northeast-2',
@@ -19,11 +20,27 @@ const AWSRegionList = [
     'us-west-2',
 ] as const;
 
+// cloudGroupName
+export const cloudGroups = [
+    'Production',
+    'Development',
+    'Staging',
+    'Testing',
+    'Critical',
+    'Analytics',
+    'Data Processing',
+    'Disaster Recovery',
+    'Backup',
+    'Security',
+    'Compliance',
+    'Audit',
+] as const;
 
-type Provider = 'AWS' | 'AZURE' | 'GCP'; // AWS만 활성화
+
+export type Provider = 'AWS' | 'AZURE' | 'GCP'; // AWS만 활성화
 
 
-interface ScheduleScanSetting {
+export interface ScheduleScanSetting {
     /**
      * frequency에 따라 변경됨
      * HOUR  : 매시간을 의미
@@ -39,46 +56,46 @@ interface ScheduleScanSetting {
 }
 
 // Credential
-interface AWSCredential {
+export interface AWSCredential {
     accessKey: string;
     secretAccessKey: string;
     roleArn?: string;
 }
 
-interface AzureCredential {
+export interface AzureCredential {
     tenantId: string;
     subscriptionId: string;
     applicationId: string;
     secretKey: string;
 }
 
-interface GCPCredential {
+export interface GCPCredential {
     projectId?: string;
     jsonText: string;
 }
 
 // Credential Type
-type AWSCredentialType = 'ACCESS_KEY' | 'ASSUME_ROLE' | 'ROLES_ANYWHERE'; // ACCESS_KEY만 활성화
+export type AWSCredentialType = 'ACCESS_KEY' | 'ASSUME_ROLE' | 'ROLES_ANYWHERE'; // ACCESS_KEY만 활성화
 
-type AzureCredentialType = 'APPLICATION';
+export type AzureCredentialType = 'APPLICATION';
 
-type GCPCredentialType = 'JSON_TEXT';
+export type GCPCredentialType = 'JSON_TEXT';
 
 
-interface AWSEventSource {
+export interface AWSEventSource {
     cloudTrailName?: string;
 }
 
-interface AzureEventSource {
+export interface AzureEventSource {
     storageAccountName?: string;
 }
 
-interface GCPEventSource {
+export interface GCPEventSource {
     storageAccountName?: string;
 }
 
 // 상세 정보 불러오는 API를 GET, 저장하는 API를 PUT으로 가정
-interface Cloud {
+export interface Cloud {
     id: string; // GET 요청 시 획득
     provider: Provider;
     name: string;
