@@ -1,4 +1,4 @@
-import { CloudManagementTable } from "@/components/CloudManagementTable";
+import CloudManagementTable from "@/components/CloudManagementTable";
 
 export default function Home() {
     return (
