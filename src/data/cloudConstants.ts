@@ -111,6 +111,15 @@ export const getScheduleLabel = (setting: {
     }
 };
 
+// 리전 목록 표시 함수
+export const getRegionLabel = (regions: string[]): string => {
+
+    return awsRegionOptions
+        .filter(option => regions.includes(option.value))
+        .map(option => option.displayName)
+        .join(', ');
+}
+
 // 리전 개수 표시 함수
 export const getRegionCountLabel = (regions: string[]): string => {
     

@@ -23,8 +23,9 @@ import {
     Trash2, 
     Plus,
 } from "lucide-react"
-import { loadCloudStorageData } from "@/data/localStorage"
+import { loadCloudStorageData, storageKey } from "@/data/localStorage"
 import TableRowSkeleton from "./TableRowSkeleton"
+import { getRegionLabel } from "@/data/cloudConstants"
 
 export default function CloudManagementTable() {
 
@@ -38,6 +39,12 @@ export default function CloudManagementTable() {
         setCloudData(tmpCloudData);
         setIsLoading(false);
     }, []);
+
+    useEffect(() => {
+
+        localStorage.setItem(storageKey, JSON.stringify(cloudData));
+
+    }, [cloudData])
 
     // 전체 선택/해제
     const handleSelectAll = (checked: boolean) => {
@@ -63,6 +70,22 @@ export default function CloudManagementTable() {
         );
     };
 
+    // 선택 열 삭제
+    const removeSelectRow = () => {
+
+        if (confirm(`선택한 ${selectedRows.length}개의 열을 제거하시겠습니까?`)) {
+
+            setCloudData(cloudData.filter(d => !selectedRows.includes(d.id)));
+            setSelectedRows([]);
+        }
+    }
+
+    // 열 삭제
+    const removeRow = (cloudId: string) => {
+
+        if (confirm(`이 열을 제거하시겠습니까?`)) setCloudData(cloudData.filter(d => d.id !== cloudId));
+    }
+
     return (
         <div className="w-full space-y-4">
             {/* 헤더 */}
@@ -79,6 +102,7 @@ export default function CloudManagementTable() {
                                     <Button 
                                         variant="outline" 
                                         size="sm"
+                                        className="cursor-pointer"
                                         onClick={() => setSelectedRows([])}
                                     >
                                         선택 해제
@@ -86,6 +110,8 @@ export default function CloudManagementTable() {
                                     <Button 
                                         variant="destructive" 
                                         size="sm"
+                                        className="cursor-pointer"
+                                        onClick={() => removeSelectRow()}
                                     >
                                         <Trash2 className="mr-2 h-4 w-4" />
                                         삭제
@@ -169,7 +195,7 @@ export default function CloudManagementTable() {
                                                         ))}
                                                     </div>
                                                 </TableCell>
-                                                <TableCell>
+                                                <TableCell title={getRegionLabel(cloud.regionList)}>
                                                     <span className="text-sm">
                                                         {getRegionCountLabel(cloud.regionList)}
                                                     </span>
@@ -204,6 +230,7 @@ export default function CloudManagementTable() {
                                                             variant="ghost"
                                                             size="icon"
                                                             className="h-8 w-8 cursor-pointer"
+                                                            onClick={() => removeRow(cloud.id)}
                                                         >
                                                             <Trash2 className="h-4 w-4" />
                                                         </Button>
