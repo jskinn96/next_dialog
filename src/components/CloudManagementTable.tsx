@@ -1,73 +1,27 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
+import { Table, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import {  
-    getScheduleLabel, 
-    getRegionCountLabel 
-} from "@/data"
-import { Cloud } from "@/types/types"
-import {  
-    Edit, 
-    Trash2, 
-    Plus,
-} from "lucide-react"
-import { loadCloudStorageData, storageKey } from "@/data/localStorage"
-import TableRowSkeleton from "./TableRowSkeleton"
-import { getRegionLabel } from "@/data/cloudConstants"
+import { Trash2, Plus } from "lucide-react"
+import { useCloudStore } from "@/store/cloudStore"
+import CloudTableRow from "./CloudTableRow"
 
 export default function CloudManagementTable() {
 
-    const [selectedRows, setSelectedRows] = useState<string[]>([]);
-    const [cloudData, setCloudData] = useState<Cloud[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-
-        const tmpCloudData = loadCloudStorageData();
-        setCloudData(tmpCloudData);
-        setIsLoading(false);
-    }, []);
-
-    useEffect(() => {
-
-        localStorage.setItem(storageKey, JSON.stringify(cloudData));
-
-    }, [cloudData])
+    const {
+        cloudData,
+        selectedRows, 
+        setCloudData,
+        setSelectedRows,
+    } = useCloudStore();
 
     // 전체 선택/해제
     const handleSelectAll = (checked: boolean) => {
 
         if (checked) setSelectedRows(cloudData.map(cloud => cloud.id));
         else setSelectedRows([]);
-    };
-
-    // 개별 선택
-    const handleSelectRow = (cloudId: string, checked: boolean) => {
-
-        if (checked) setSelectedRows([...selectedRows, cloudId]);
-        else setSelectedRows(selectedRows.filter(id => id !== cloudId));
-    };
-
-    // 상태 뱃지 렌더링
-    const renderStatusBadge = (enabled: boolean) => {
-        
-        return enabled ? (
-            <Badge variant="success" className="font-normal">활성</Badge>
-        ) : (
-            <Badge variant="secondary" className="font-normal">비활성</Badge>
-        );
     };
 
     // 선택 열 삭제
@@ -78,12 +32,6 @@ export default function CloudManagementTable() {
             setCloudData(cloudData.filter(d => !selectedRows.includes(d.id)));
             setSelectedRows([]);
         }
-    }
-
-    // 열 삭제
-    const removeRow = (cloudId: string) => {
-
-        if (confirm(`이 열을 제거하시겠습니까?`)) setCloudData(cloudData.filter(d => d.id !== cloudId));
     }
 
     return (
@@ -129,6 +77,7 @@ export default function CloudManagementTable() {
                     {/* 테이블 */}
                     <div className="rounded-md border">
                         <Table>
+                            {/* 헤더 */}
                             <TableHeader>
                                 <TableRow className="bg-muted/50">
                                     <TableHead className="w-[40px]">
@@ -152,95 +101,8 @@ export default function CloudManagementTable() {
                                     <TableHead className="text-center font-semibold">작업</TableHead>
                                 </TableRow>
                             </TableHeader>
-                            <TableBody>
-                                {
-                                    isLoading
-                                    ? <TableRowSkeleton />
-                                    : (
-                                        cloudData.map((cloud) => (
-                                            <TableRow 
-                                                key={cloud.id}
-                                                className="hover:bg-muted/30"
-                                            >
-                                                <TableCell>
-                                                    <Checkbox 
-                                                        checked={selectedRows.includes(cloud.id)}
-                                                        onCheckedChange={(checked) => 
-                                                            handleSelectRow(cloud.id, checked as boolean)
-                                                        }
-                                                        className="cursor-pointer"
-                                                    />
-                                                </TableCell>
-                                                <TableCell>
-                                                    <span className="font-semibold">{cloud.provider}</span>
-                                                </TableCell>
-                                                <TableCell className="font-medium">
-                                                    <div className="flex flex-col">
-                                                        <span>{cloud.name}</span>
-                                                        <span className="text-xs text-muted-foreground">
-                                                            ID: {cloud.id}
-                                                        </span>
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div className="flex flex-wrap gap-1">
-                                                        {cloud.cloudGroupName?.map((group, idx) => (
-                                                            <Badge 
-                                                                key={idx} 
-                                                                variant="outline" 
-                                                                className="text-xs font-normal"
-                                                            >
-                                                                {group}
-                                                            </Badge>
-                                                        ))}
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell title={getRegionLabel(cloud.regionList)}>
-                                                    <span className="text-sm">
-                                                        {getRegionCountLabel(cloud.regionList)}
-                                                    </span>
-                                                </TableCell>
-                                                <TableCell className="text-center">
-                                                    {renderStatusBadge(cloud.eventProcessEnabled)}
-                                                </TableCell>
-                                                <TableCell className="text-center">
-                                                    {renderStatusBadge(cloud.userActivityEnabled)}
-                                                </TableCell>
-                                                <TableCell className="text-center">
-                                                    {renderStatusBadge(cloud.scheduleScanEnabled)}
-                                                </TableCell>
-                                                <TableCell>
-                                                    <span className="text-sm text-muted-foreground">
-                                                        {cloud.scheduleScanEnabled 
-                                                            ? getScheduleLabel(cloud.scheduleScanSetting)
-                                                            : '-'
-                                                        }
-                                                    </span>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div className="flex items-center justify-center gap-1">
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            className="h-8 w-8 cursor-pointer"
-                                                        >
-                                                            <Edit className="h-4 w-4" />
-                                                        </Button>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            className="h-8 w-8 cursor-pointer"
-                                                            onClick={() => removeRow(cloud.id)}
-                                                        >
-                                                            <Trash2 className="h-4 w-4" />
-                                                        </Button>
-                                                    </div>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))
-                                    )
-                                }
-                            </TableBody>
+                            {/* 열 */}
+                            <CloudTableRow />
                         </Table>
                     </div>
                 </CardContent>
