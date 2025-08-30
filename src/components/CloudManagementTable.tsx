@@ -15,6 +15,7 @@ export default function CloudManagementTable() {
         selectedRows, 
         setCloudData,
         setSelectedRows,
+        openModal,
     } = useCloudStore();
 
     // 전체 선택/해제
@@ -66,7 +67,11 @@ export default function CloudManagementTable() {
                                     </Button>
                                 </div>
                             )}
-                            <Button size="sm" className="cursor-pointer">
+                            <Button 
+                                size="sm" 
+                                className="cursor-pointer"
+                                onClick={() => openModal()}
+                            >
                                 <Plus className="mr-2 h-4 w-4" />
                                 클라우드 생성
                             </Button>

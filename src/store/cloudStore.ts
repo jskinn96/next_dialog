@@ -7,11 +7,15 @@ interface ICloudStore {
     // 상태
     cloudData: Cloud[];
     selectedRows: string[];
+    isOpenModal: boolean;
 
     // 액션
     loadCloudData: () => void;
     setCloudData: (data: Cloud[]) => void;
     setSelectedRows: (data: string[]) => void;
+    openModal: () => void;
+    closeModal: () => void;
+    addCloudData: (data: Cloud) => void;
 }
 
 export const useCloudStore = create<ICloudStore>((set, get) => ({
@@ -21,6 +25,8 @@ export const useCloudStore = create<ICloudStore>((set, get) => ({
     cloudData: [],
     // 선택 열
     selectedRows: [],
+    // 모달 열고 닫기
+    isOpenModal: false,
 
     // 액션
     // 데이터 로드
@@ -41,5 +47,25 @@ export const useCloudStore = create<ICloudStore>((set, get) => ({
     setSelectedRows: (data) => {
 
         set({ selectedRows: data });
+    },
+    // 모달 열기
+    openModal: () => {
+
+        set({ isOpenModal: true });
+    },
+    // 모달 닫기
+    closeModal: () => {
+
+        set({ isOpenModal: false });
+    },
+    // 데이터 추가
+    addCloudData: (data) => {
+
+        const newData = {...data, id: `cloud-${Date.now()}`};
+        const newCloudData = [newData, ...get().cloudData];
+
+        localStorage.setItem(storageKey, JSON.stringify(newCloudData))
+
+        set({ cloudData: newCloudData })
     }
 }));
