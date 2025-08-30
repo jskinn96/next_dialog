@@ -14,14 +14,15 @@ export default function CloudTableRow() {
     const {
         cloudData,
         selectedRows,
-        page,  
+        page,
+        pageData,  
         loadCloudData,
         setCloudData,
         setSelectedRows,
         openModal,
+        setPageData,
     } = useCloudStore();
     const [isLoading, setIsLoading] = useState(true);
-    const [pageData, setPageData] = useState<Cloud[]>([]);
 
     useEffect(() => {
 
@@ -39,7 +40,7 @@ export default function CloudTableRow() {
         const tmpData = cloudData.slice(startNumber, endNumber);
         setPageData(tmpData);
 
-    }, [page, cloudData]);
+    }, [page, cloudData, setPageData]);
 
     // 개별 선택
     const handleSelectRow = (cloudId: string, checked: boolean) => {

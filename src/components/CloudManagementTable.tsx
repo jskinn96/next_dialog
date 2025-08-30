@@ -13,7 +13,8 @@ export default function CloudManagementTable() {
 
     const {
         cloudData,
-        selectedRows, 
+        selectedRows,
+        pageData, 
         setCloudData,
         setSelectedRows,
         openModal,
@@ -22,8 +23,16 @@ export default function CloudManagementTable() {
     // 전체 선택/해제
     const handleSelectAll = (checked: boolean) => {
 
-        if (checked) setSelectedRows(cloudData.map(cloud => cloud.id));
-        else setSelectedRows([]);
+        if (checked) {
+
+            const newSelectedRows = pageData.map(cloud => cloud.id);
+            setSelectedRows([...selectedRows, ...newSelectedRows]);
+
+        } else {
+
+            const pageIds = new Set(pageData.map(cloud => cloud.id));
+            setSelectedRows(selectedRows.filter(id => !pageIds.has(id)));
+        }
     };
 
     // 선택 열 삭제
@@ -55,7 +64,7 @@ export default function CloudManagementTable() {
                                         className="cursor-pointer"
                                         onClick={() => setSelectedRows([])}
                                     >
-                                        선택 해제
+                                        전체 선택 해제
                                     </Button>
                                     <Button 
                                         variant="destructive" 
@@ -89,8 +98,8 @@ export default function CloudManagementTable() {
                                     <TableHead className="w-[40px]">
                                         <Checkbox 
                                             checked={
-                                                cloudData.length > 0 && 
-                                                selectedRows.length === cloudData.length
+                                                cloudData.length > 0 
+                                                && pageData.every(cloud => selectedRows.includes(cloud.id))
                                             }
                                             onCheckedChange={handleSelectAll}
                                             className="cursor-pointer"

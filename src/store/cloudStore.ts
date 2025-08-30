@@ -10,6 +10,7 @@ interface ICloudStore {
     isOpenModal: boolean;
     editCloudData: Cloud | null;
     page: number;
+    pageData: Cloud[];
 
     // 액션
     loadCloudData: () => void;
@@ -20,6 +21,7 @@ interface ICloudStore {
     addCloudData: (data: Cloud) => void;
     updateCloudData: (id: string, data: Cloud) => void;
     setPage: (p: number) => void;
+    setPageData: (data: Cloud[]) => void;
 }
 
 export const useCloudStore = create<ICloudStore>((set, get) => ({
@@ -35,6 +37,8 @@ export const useCloudStore = create<ICloudStore>((set, get) => ({
     editCloudData: null,
     // 현재 페이지
     page: 1,
+    // 현재 페이지 클라우드 데이터
+    pageData: [],
 
     // 액션
     // 데이터 로드
@@ -92,5 +96,10 @@ export const useCloudStore = create<ICloudStore>((set, get) => ({
     setPage: (p) => {
 
         set({ page: p })
+    },
+    // 현재 페이지 클라우드 데이터 업데이트
+    setPageData: (data) => {
+
+        set({ pageData: data });
     }
 }));
