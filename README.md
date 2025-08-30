@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# API 관리 방안
 
-## Getting Started
+## 단계 1: API 문서 확인 및 분석
+### API의 목적, 요청 또는 응답 형식, 파라미터 등을 명확하게 파악합니다
+- API 문서는 통일된 문서 시스템으로 관리되어야 합니다
+- API를 기능별로 분류하여 직관적으로 접근 가능하게 해야합니다
 
-First, run the development server:
+## 단계 2: API 타입 작성
+### 타입 안정성을 높여서 런타임 오류를 방지하고 생산성을 향상합니다
+- API의 요청이나 응답에 사용되는 공통 데이터 구조를 재사용 가능한 타입으로 정의합니다
+- API 관련 타입을 관리할 수 있는 별도의 폴더를 구성합니다
+- API 타입을 자동으로 생성해주는 도구를 활용하면 생산성을 향상할 수 있습니다
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 단계 3: API 호출 함수 및 훅 구성
+### 재사용 가능한 API 호출 로직을 구현하고 React Query를 통해 데이터 페칭 상태를 효율적으로 관리합니다
+- axios(인터셉트), fetch(revalidate) 기능을 활용하여 데이터 상태를 효과적으로 관리합니다(인증 토큰, 에러 처리 등)
+- 단일 책임 원칙으로 각각의 훅은 하나의 API 호출 로직만 담당하게 합니다
+- API와 파라미터를 명확하게 구분할 수 있는 규칙을 정하고 쿼리 키를 효율적으로 관리합니다
+- 위 방식을 통해 쿼리 캐싱 등도 효율적으로 관리될 수 있습니다
+- 쿼리 키에 대응하는 커스텀 훅을 구현해서 생산성을 향상할 수 있습니다
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# i18n 적용 방안
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 번역 JSON 관리
+### 번역 파일의 일관성을 유지하고 관리를 편하게 할 수 있도록 합니다
+- 기능별로 번역 파일을 분리하여 관리 합니다
+- 번역키를 "setting.user.profile" 처럼 계층적으로 구성해서 중복을 피하고 의미를 확실하게 합니다
+- 별도의 폴더를 만들어서 번역 관련 파일들을 관리 합니다
 
-## Learn More
+## 번역 수행
+### 번역 전문가와 협업해서 효율적인 번역 프로세스를 구축합니다
+- 변역 관리 시스템(TMS)을 활용해서 번역 전문가가 번역을 하면 개발자가 해당 번역 파일을 적용할 수 있는 시스템을 구축합니다
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 코드 작성
+### 번역된 텍스트를 컴포넌트에 적용하고 상태에 따라 동적으로 언어를 변경할 수 있게 합니다
+- useTranslation(react-i18next) 번역 훅을 사용하여 번역된 텍스트를 보여줍니다
+- i18n.changeLanguage() 메서드를 사용하여 사용자가 원하는 언어로 쉽게 변경할 수 있게 합니다
