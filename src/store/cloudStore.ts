@@ -8,14 +8,18 @@ interface ICloudStore {
     cloudData: Cloud[];
     selectedRows: string[];
     isOpenModal: boolean;
+    editCloudData: Cloud | null;
+    page: number;
 
     // 액션
     loadCloudData: () => void;
     setCloudData: (data: Cloud[]) => void;
     setSelectedRows: (data: string[]) => void;
-    openModal: () => void;
+    openModal: (data?: Cloud) => void;
     closeModal: () => void;
     addCloudData: (data: Cloud) => void;
+    updateCloudData: (id: string, data: Cloud) => void;
+    setPage: (p: number) => void;
 }
 
 export const useCloudStore = create<ICloudStore>((set, get) => ({
@@ -27,6 +31,10 @@ export const useCloudStore = create<ICloudStore>((set, get) => ({
     selectedRows: [],
     // 모달 열고 닫기
     isOpenModal: false,
+    // 데이터 수정값
+    editCloudData: null,
+    // 현재 페이지
+    page: 1,
 
     // 액션
     // 데이터 로드
@@ -49,9 +57,9 @@ export const useCloudStore = create<ICloudStore>((set, get) => ({
         set({ selectedRows: data });
     },
     // 모달 열기
-    openModal: () => {
+    openModal: (data) => {
 
-        set({ isOpenModal: true });
+        set({ isOpenModal: true, editCloudData: data });
     },
     // 모달 닫기
     closeModal: () => {
@@ -67,5 +75,22 @@ export const useCloudStore = create<ICloudStore>((set, get) => ({
         localStorage.setItem(storageKey, JSON.stringify(newCloudData))
 
         set({ cloudData: newCloudData })
+    },
+    // 데이터 수정
+    updateCloudData: (id, data) => {
+
+        const newData = {...data, id: id};
+        const newCloudData = get().cloudData.map(cloud => 
+            cloud.id === id ? newData : cloud
+        );
+
+        localStorage.setItem(storageKey, JSON.stringify(newCloudData))
+
+        set({ cloudData: newCloudData })
+    },
+    // 페이지 설정
+    setPage: (p) => {
+
+        set({ page: p })
     }
 }));

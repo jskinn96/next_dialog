@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Trash2, Plus } from "lucide-react"
 import { useCloudStore } from "@/store/cloudStore"
 import CloudTableRow from "./CloudTableRow"
+import CloudTablePagination from "./CloudTablePagination"
 
 export default function CloudManagementTable() {
 
@@ -109,6 +110,9 @@ export default function CloudManagementTable() {
                             {/* 열 */}
                             <CloudTableRow />
                         </Table>
+                    </div>
+                    <div className="flex items-center justify-end px-2 py-4">
+                        <CloudTablePagination />
                     </div>
                 </CardContent>
             </Card>

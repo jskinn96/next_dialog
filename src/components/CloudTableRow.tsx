@@ -7,25 +7,39 @@ import { Badge } from "./ui/badge";
 import { getRegionCountLabel, getRegionLabel, getScheduleLabel } from "@/data/cloudConstants";
 import { Button } from "./ui/button";
 import { Edit, Trash2 } from "lucide-react";
+import { Cloud } from "@/types/types";
 
 export default function CloudTableRow() {
 
     const {
         cloudData,
-        selectedRows,  
+        selectedRows,
+        page,  
         loadCloudData,
         setCloudData,
         setSelectedRows,
+        openModal,
     } = useCloudStore();
     const [isLoading, setIsLoading] = useState(true);
+    const [pageData, setPageData] = useState<Cloud[]>([]);
 
     useEffect(() => {
 
         loadCloudData();
-        setIsLoading(false);
 
     }, [loadCloudData]);
 
+    useEffect(() => {
+
+        setIsLoading(false);
+        
+        const prevPage = page - 1;
+        const startNumber = prevPage * 10;
+        const endNumber = page * 10; 
+        const tmpData = cloudData.slice(startNumber, endNumber);
+        setPageData(tmpData);
+
+    }, [page, cloudData]);
 
     // 개별 선택
     const handleSelectRow = (cloudId: string, checked: boolean) => {
@@ -54,13 +68,19 @@ export default function CloudTableRow() {
         }
     }
 
+    // 열 수정
+    const editRow = (data: Cloud) => {
+
+        openModal(data);
+    }
+
     return (
         <TableBody>
             {
                 isLoading
                 ? <TableRowSkeleton />
                 : (
-                    cloudData.map((cloud) => (
+                    pageData.map((cloud) => (
                         <TableRow 
                             key={cloud.id}
                             className="hover:bg-muted/30"
@@ -126,6 +146,7 @@ export default function CloudTableRow() {
                                         variant="ghost"
                                         size="icon"
                                         className="h-8 w-8 cursor-pointer"
+                                        onClick={() => editRow(cloud)}
                                     >
                                         <Edit className="h-4 w-4" />
                                     </Button>

@@ -12,13 +12,16 @@ import { useCloudStore } from "@/store/cloudStore"
 import { Path, useForm } from "react-hook-form"
 import { CloudFormData, cloudFormSchema } from "@/lib/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useEffect } from "react"
 
 export function CloudCreateModal() {
 
     const {
         isOpenModal,
+        editCloudData,
         closeModal,
-        addCloudData
+        addCloudData,
+        updateCloudData
     } = useCloudStore();
 
     const {
@@ -32,6 +35,13 @@ export function CloudCreateModal() {
         resolver: zodResolver(cloudFormSchema),
         defaultValues: defaultCloudData as CloudFormData
     });
+
+    useEffect(() => {
+
+        if (editCloudData) reset(editCloudData as CloudFormData);
+        else reset(defaultCloudData as CloudFormData);
+
+    }, [editCloudData, reset])
 
     // 선택 그룹
     const selectGroups = watch('cloudGroupName');
@@ -72,7 +82,8 @@ export function CloudCreateModal() {
 
     const submitForm = (data: CloudFormData) => { 
 
-        addCloudData(data as Cloud);
+        if (editCloudData) updateCloudData(editCloudData.id, data as Cloud);
+        else addCloudData(data as Cloud);
 
         closeModal();
         reset();
@@ -82,7 +93,9 @@ export function CloudCreateModal() {
         <Dialog open={isOpenModal} onOpenChange={closeModal}>
             <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col select-none">
                 <DialogHeader>
-                    <DialogTitle>클라우드 생성</DialogTitle>
+                    <DialogTitle>
+                        {editCloudData ? '클라우드 수정' : '클라우드 생성'}
+                    </DialogTitle>
                 </DialogHeader>
                 
                 <form 
@@ -409,7 +422,7 @@ export function CloudCreateModal() {
                         type="submit" 
                         form="cloudForm" 
                         className="cursor-pointer"
-                    >생성</Button>
+                    >{editCloudData ? '수정' : '생성'}</Button>
                 </div>
             </DialogContent>
         </Dialog>
