@@ -11,6 +11,7 @@ interface ICloudStore {
     editCloudData: Cloud | null;
     page: number;
     pageData: Cloud[];
+    isTableLoading: boolean;
 
     // 액션
     loadCloudData: () => void;
@@ -39,6 +40,8 @@ export const useCloudStore = create<ICloudStore>((set, get) => ({
     page: 1,
     // 현재 페이지 클라우드 데이터
     pageData: [],
+    // 테이블 로딩
+    isTableLoading: true,
 
     // 액션
     // 데이터 로드
@@ -78,7 +81,7 @@ export const useCloudStore = create<ICloudStore>((set, get) => ({
 
         localStorage.setItem(storageKey, JSON.stringify(newCloudData))
 
-        set({ cloudData: newCloudData })
+        set({ cloudData: newCloudData, isTableLoading: true })
     },
     // 데이터 수정
     updateCloudData: (id, data) => {
@@ -90,16 +93,16 @@ export const useCloudStore = create<ICloudStore>((set, get) => ({
 
         localStorage.setItem(storageKey, JSON.stringify(newCloudData))
 
-        set({ cloudData: newCloudData })
+        set({ cloudData: newCloudData, isTableLoading: true })
     },
     // 페이지 설정
     setPage: (p) => {
 
-        set({ page: p })
+        set({ page: p, isTableLoading: true })
     },
     // 현재 페이지 클라우드 데이터 업데이트
     setPageData: (data) => {
 
-        set({ pageData: data });
-    }
+        set({ pageData: data, isTableLoading: false });
+    },
 }));

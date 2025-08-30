@@ -1,6 +1,6 @@
 import { TableBody, TableCell, TableRow } from "./ui/table";
 import { Checkbox } from "@/components/ui/checkbox"
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useCloudStore } from "@/store/cloudStore";
 import TableRowSkeleton from "./TableRowSkeleton";
 import { Badge } from "./ui/badge";
@@ -16,13 +16,13 @@ export default function CloudTableRow() {
         selectedRows,
         page,
         pageData,  
+        isTableLoading,
         loadCloudData,
         setCloudData,
         setSelectedRows,
         openModal,
         setPageData,
     } = useCloudStore();
-    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
 
@@ -31,8 +31,6 @@ export default function CloudTableRow() {
     }, [loadCloudData]);
 
     useEffect(() => {
-
-        setIsLoading(false);
         
         const prevPage = page - 1;
         const startNumber = prevPage * 10;
@@ -78,7 +76,7 @@ export default function CloudTableRow() {
     return (
         <TableBody>
             {
-                isLoading
+                isTableLoading
                 ? <TableRowSkeleton />
                 : (
                     pageData.map((cloud) => (
