@@ -33,7 +33,7 @@ export default function CloudManagementTable() {
             const pageIds = new Set(pageData.map(cloud => cloud.id));
             setSelectedRows(selectedRows.filter(id => !pageIds.has(id)));
         }
-    };
+    }
 
     // 선택 열 삭제
     const removeSelectRow = () => {

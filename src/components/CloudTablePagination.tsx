@@ -29,7 +29,7 @@ export default function CloudTablePagination() {
         if (page > 1) setPrevDisabled(false);
         else setPrevDisabled(true);
 
-    }, [total, page])
+    }, [total, page]);
     
     // 다음 페이지
     const nextPage = () => {
